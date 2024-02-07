@@ -37,7 +37,7 @@ jobs:
         run: |
           PROJECT_KEY=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
           echo "project key is $PROJECT_KEY"
-          mvn sonar:sonar \
+          mvn -X sonar:sonar \
             -Dsonar.projectKey=$PROJECT_KEY \
             -Dsonar.organization=${{ env.SONAR_ORG_KEY }} \
             -Dsonar.host.url=https://sonarcloud.io \
