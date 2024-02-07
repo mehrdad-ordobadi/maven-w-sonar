@@ -7,7 +7,7 @@ jobs:
   get-cost-analysis:
     runs-on: ubuntu-latest
     env:
-        TF_PATH: /IaC
+        TF_PATH: ./IaC
         TF_ENV: dev   
     steps:
 
