@@ -21,11 +21,12 @@ jobs:
 
       - name: cost-analysis-with-infracost
         run: |
-          infracost breakdown --path=$TF_DIR \
-                              --format=json \  
-                              --terraform-var-file=$TF_DIR/$TF_ENV.tfvars \
-                              --terraform-var=app_version=${{ github.sha }} \
-                              --output-file=cost-analysis.json
+          pwd
+          infracost breakdown --path $TF_DIR \
+                              --format json \  
+                              --terraform-var-file $TF_DIR/$TF_ENV.tfvars \
+                              --terraform-var app_version=${{ github.sha }} \
+                              --out-file cost-analysis.json
           TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
           TOTAL_DAILY_COST=$(echo "$TOTAL_HOURLY_COST * 24" | bc)
           TOTAL_RESOURCES=$(jq '.totalDetectedResources' cost-analysis.json)
