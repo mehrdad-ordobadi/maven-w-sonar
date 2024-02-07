@@ -20,9 +20,14 @@ variable "aws_secret_access_key" {
   type        = string
 }
 
+variable "cidr_block" {
+  description = "CIDR block for the VPC"
+  type        = string
+}
+
 # Create your VPC
 resource "aws_vpc" "coderunner_vpc" {
-  cidr_block =  "10.0.0.0/16" # CIDR block for the VPC
+  cidr_block =  var.cidr_block # CIDR block for the VPC
   tags = {
     Name = "${var.environment_name}" # Name of your VPC
   }
