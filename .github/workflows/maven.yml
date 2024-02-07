@@ -43,15 +43,24 @@ jobs:
       - name: echo-image-name
         run: echo $IMAGE_NAME
       
-      - name: scan-image-with-trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: $IMAGE_NAME
-          format: 'json'
-          severity: 'HIGH,CRITICAL,UNKNOWN' # check if this is the right severity level - webhooks might not accept long reports
-          hide-progress: true
-          exit-code: 0 # set to zero for testing purposes
-          output: 'image-report.json' # adjust based on how you want the report to be handled
+      # - name: scan-image-with-trivy
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: $IMAGE_NAME
+      #     format: 'json'
+      #     severity: 'HIGH,CRITICAL,UNKNOWN' # check if this is the right severity level - webhooks might not accept long reports
+      #     hide-progress: true
+      #     exit-code: 0 # set to zero for testing purposes
+      #     output: 'image-report.json' # adjust based on how you want the report to be handled
+
+      - name: Scan Docker image with Trivy
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/$(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }}
+          trivy image --format json --severity HIGH,CRITICAL,UNKNOWN --no-progress --output image-report.json $IMAGE_NAME
+        env:
+          TRIVY_IGNORE_UNFIXED: true
+          TRIVY_EXIT_CODE: "0"
+          TRIVY_SEVERITY: "HIGH,CRITICAL,UNKNOWN"
       
       - name: summarize-and-format-trivy-image-scan-results
         run: |
