@@ -20,21 +20,26 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
       - name: cost-analysis-with-infracost
+        # run: |
+        #   pwd
+        #   infracost breakdown --path=$GITHUB_WORKSPACE/$TF_DIR \
+        #                       --format=json \  
+        #                       --terraform-var-file=$GITHUB_WORKSPACE/$TF_DIR/$TF_ENV.tfvars \
+        #                       --terraform-var=app_version=${{ github.sha }} \
+        #                       --output-file=cost-analysis.json
+        #   TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
+        #   TOTAL_DAILY_COST=$(echo "$TOTAL_HOURLY_COST * 24" | bc)
+        #   TOTAL_RESOURCES=$(jq '.totalDetectedResources' cost-analysis.json)
+        #   COST_SUMMARY="Total Daily Cost: $TOTAL_DAILY_COST, Total Resources Detected: $TOTAL_RESOURCES"
+        #   echo "COST_SUMMARY=$COST_SUMMARY" >> $GITHUB_ENV
         run: |
-            infracost breakdown --path=$GITHUB_WORKSPACE/$TF_DIR \
-                                --format=json \  
-                                --terraform-var-file=$GITHUB_WORKSPACE/$TF_DIR/$TF_ENV.tfvars \
-                                --terraform-var=app_version=${{ github.sha }} \
-                                --output-file=cost-analysis.json
-            TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
-            TOTAL_DAILY_COST=$(echo "$TOTAL_HOURLY_COST * 24" | bc)
-            TOTAL_RESOURCES=$(jq '.totalDetectedResources' cost-analysis.json)
-            COST_SUMMARY="Total Daily Cost: $TOTAL_DAILY_COST, Total Resources Detected: $TOTAL_RESOURCES"
-            echo "COST_SUMMARY=$COST_SUMMARY" >> $GITHUB_ENV
-                      
-      - name: echo-cost-summary
-        run: echo $COST_SUMMARY
-        
+          whoami
+          echo $GITHUB_WORKSPACE
+          ls -alh $GITHUB_WORKSPACE/$TF_DIR
+          cat $GITHUB_WORKSPACE/$TF_DIR/$TF_ENV.tfvars              
+              - name: echo-cost-summary
+                run: echo $COST_SUMMARY
+              
 
 
             
