@@ -25,9 +25,9 @@ jobs:
             ls
             ls $TF_PATH
             ls $TF_PATH/$TF_ENV.tfvars
-            infracost breakdown --path=$TF_PATH \
+            infracost breakdown --path=./IaC \
                                 --format=json \  
-                                --terraform-var-file=$TF_PATH/$TF_ENV.tfvars \
+                                --terraform-var-file=./IaC/dev.tfvars \
                                 --terraform-var=app_version=${{ github.sha }} \
                                 --output-file=cost-analysis.json
             TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
