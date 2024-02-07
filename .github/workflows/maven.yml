@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main # the name of your main branch
+env:
+  TF_ENV: 'dev' 
+
 jobs:
   build:
     name: Build
@@ -80,6 +83,47 @@ jobs:
       
       - name: echo-scan-summary
         run: echo -e "$IMAGE_SCAN_SUMMARY"
+
+
+      - name: scan-terraform-code-with-trivy
+        uses: aquasecurity/trivy-action@master
+        with: 
+          scan-type: 'config'
+          tf-vars: 'IaC/${{ env.TF_ENV }}.tfvars' 
+          hide-progress: true
+          format: 'json'
+          severity: 'HIGH,CRITICAL,UNKNOWN' # check if this is the right severity level
+          exit-code: 0
+          output: 'terraform-report.json' # adjust based on how you want the report to be handled
+          
+      - name: summarize-and-format-trivy-terraform-scan-results
+        run: |
+          apt update && apt install -y jq
+          # Directly create JSON payload from the report, no need to intermediate file
+          apt update && apt install -y jq
+          JSON_TF_PAYLOAD=$(jq -r \
+              '.Results[] | .Vulnerabilities[] | 
+              "- Severity: \(.Severity), ID: \(.VulnerabilityID), Package: \(.PkgName)\n"' \
+              terraform-report.json | 
+              jq -Rs \
+                  '{
+                      text: "Trivy Terraform Scan Summary", 
+                      attachments: [
+                          {
+                              text: "Scan Summary", 
+                              fields: [
+                                  {
+                                      title: "Scan Summary", 
+                                      value: ., 
+                                      short: false
+                                  }
+                              ]
+                          }
+                      ]
+                  }')
+          echo "TERRAFORM_SCAN_SUMMARY<<EOF" >> $GITHUB_ENV
+          echo "$JSON_TF_PAYLOAD" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Push Docker image to registry
         run: |
