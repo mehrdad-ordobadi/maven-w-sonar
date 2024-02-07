@@ -50,6 +50,6 @@ jobs:
           
       - name: Push Docker image to registry
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push $(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }}
 
