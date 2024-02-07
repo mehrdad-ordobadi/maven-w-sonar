@@ -51,5 +51,5 @@ jobs:
       - name: Push Docker image to registry
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-          docker push {{ secrets.DOCKER_USERNAME }}/$(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/$(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }}
 
