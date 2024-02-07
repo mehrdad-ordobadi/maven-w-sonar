@@ -124,6 +124,9 @@ jobs:
           echo "TERRAFORM_SCAN_SUMMARY<<EOF" >> $GITHUB_ENV
           echo "$JSON_TF_PAYLOAD" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+      
+      - name: echo-terraform-scan-summary
+        run: echo -e "$TERRAFORM_SCAN_SUMMARY"
 
       - name: Push Docker image to registry
         run: |
