@@ -35,9 +35,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_ORG_KEY: mehrdad-ordobadi
         run: |
-          PROJECT_KEY=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
-          echo "project key is $PROJECT_KEY"
-          mvn -X sonar:sonar \
+          # PROJECT_KEY=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
+          # echo "project key is $PROJECT_KEY"
+          PROJECT_KEY="maven-w-sonar"
+          mvn sonar:sonar \
             -Dsonar.projectKey=$PROJECT_KEY \
             -Dsonar.organization=${{ env.SONAR_ORG_KEY }} \
             -Dsonar.host.url=https://sonarcloud.io \
