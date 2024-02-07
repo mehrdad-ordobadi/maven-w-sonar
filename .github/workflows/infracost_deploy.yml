@@ -7,7 +7,7 @@ jobs:
   get-cost-analysis:
     runs-on: ubuntu-latest
     env:
-        TF_PATH: ./IaC
+        TF_PATH: /IaC
         TF_ENV: dev   
     steps:
 
@@ -21,6 +21,10 @@ jobs:
 
       - name: cost-analysis-with-infracost
         run: |
+            pwd
+            ls
+            ls $TF_PATH
+            ls $TF_PATH/$TF_ENV.tfvars
             infracost breakdown --path=$TF_PATH \
                                 --format=json \  
                                 --terraform-var-file=$TF_PATH/$TF_ENV.tfvars \

@@ -98,9 +98,7 @@ jobs:
           
       - name: summarize-and-format-trivy-terraform-scan-results
         run: |
-          apt update && apt install -y jq
           # Directly create JSON payload from the report, no need to intermediate file
-          apt update && apt install -y jq
           JSON_TF_PAYLOAD=$(jq -r \
               '.Results[] | .Vulnerabilities[] | 
               "- Severity: \(.Severity), ID: \(.VulnerabilityID), Package: \(.PkgName)\n"' \
