@@ -21,10 +21,6 @@ jobs:
 
       - name: cost-analysis-with-infracost
         run: |
-            pwd
-            ls
-            ls $TF_PATH
-            ls $TF_PATH/$TF_ENV.tfvars
             infracost breakdown --path=$GITHUB_WORKSPACE/$TF_PATH \
                                 --format=json \  
                                 --terraform-var-file=$GITHUB_WORKSPACE/$TF_PATH/$TF_ENV.tfvars \
