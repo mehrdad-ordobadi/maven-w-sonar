@@ -90,7 +90,7 @@ jobs:
         with: 
           scan-type: 'config'
           tf-vars: 'IaC/${{ env.TF_ENV }}.tfvars' 
-          hide-progress: true
+          # hide-progress: true
           format: 'json'
           severity: 'HIGH,CRITICAL,UNKNOWN' # check if this is the right severity level
           exit-code: 0

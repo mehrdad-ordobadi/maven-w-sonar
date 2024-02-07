@@ -23,9 +23,9 @@ jobs:
         run: |
             apt update && apt install -y jq
             infracost breakdown --path=$TF_PATH \
-                                --format=json \    
-                                --terraform-var-file=./$TF_ENV.tfvars \
-                                --terraform-var=app_version=${{ github.sha }}
+                                --format=json \  
+                                --terraform-var-file=./$TF_PATH/$TF_ENV.tfvars \
+                                --terraform-var=app_version=${{ github.sha }} \
                                 --output-file=cost-analysis.json
             TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
             TOTAL_DAILY_COST=$(echo "$TOTAL_HOURLY_COST * 24" | bc)
