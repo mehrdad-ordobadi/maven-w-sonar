@@ -34,10 +34,11 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_ORG_KEY: mehrdad-ordobadi
-          SONAR_PROJECT_KEY: ${{ github.repository }}
         run: |
+          PROJECT_KEY=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
+          echo "project key is $PROJECT_KEY"
           mvn sonar:sonar \
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} \
+            -Dsonar.projectKey=$PROJECT_KEY \
             -Dsonar.organization=${{ env.SONAR_ORG_KEY }} \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ env.SONAR_TOKEN }}
@@ -48,5 +49,5 @@ jobs:
       - name: Push Docker image to registry
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push $GITHUB_REPOSITORY:${{ github.sha }}
+          docker push $(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }}
 
