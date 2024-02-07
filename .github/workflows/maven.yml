@@ -46,7 +46,7 @@ jobs:
             -Dsonar.login=${{ env.SONAR_TOKEN }}
       
       - name: Build Docker image
-        run: docker build -t my-application:${{ github.sha }} .
+        run: docker build -t $(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }} .
           
       - name: Push Docker image to registry
         run: |
