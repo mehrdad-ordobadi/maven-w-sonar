@@ -21,7 +21,6 @@ jobs:
 
       - name: cost-analysis-with-infracost
         run: |
-          pwd
           infracost breakdown --path $TF_DIR \
                     --format json \
                     --terraform-var-file $TF_DIR/$TF_ENV.tfvars \
@@ -32,7 +31,10 @@ jobs:
           TOTAL_RESOURCES=$(jq '.totalDetectedResources' cost-analysis.json)
           COST_SUMMARY="Total Daily Cost: $TOTAL_DAILY_COST, Total Resources Detected: $TOTAL_RESOURCES"
           echo "COST_SUMMARY=$COST_SUMMARY" >> $GITHUB_ENV
-
+    
+      - name: echo-cost-summary
+        run: |
+          echo $COST_SUMMARY
 
 
             

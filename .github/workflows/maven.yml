@@ -98,6 +98,9 @@ jobs:
           
       - name: summarize-and-format-trivy-terraform-scan-results
         run: |
+          ls terraform-report.json
+          jq '.' terraform-report.json
+          echo "******************************"
           # Directly create JSON payload from the report, no need to intermediate file
           JSON_TF_PAYLOAD=$(jq -r \
               '.Results[] | .Vulnerabilities[] | 
