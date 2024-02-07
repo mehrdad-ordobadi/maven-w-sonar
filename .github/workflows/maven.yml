@@ -48,6 +48,31 @@ jobs:
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/$(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }} .
           
+      - name: scan-image-with-trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKER_USERNAME }}/$(echo $GITHUB_REPOSITORY | cut -d'/' -f2):${{ github.sha }}
+          format: 'json'
+          severity: 'HIGH,CRITICAL,UNKNOWN' # check if this is the right severity level - webhooks might not accept long reports
+          hide-progress: true
+          exit-code: 0 # set to zero for testing purposes
+          output: 'image-report.json' # adjust based on how you want the report to be handled
+      
+      - name: summarize-and-format-trivy-image-scan-results
+        run: |
+          apt update && apt install -y jq
+          JSON_TF_PAYLOAD=$(jq -r '.Results[] | .Vulnerabilities[] | \
+            "- Severity: \(.Severity), ID: \(.VulnerabilityID), Package: \(.PkgName)\n"' \
+            terraform-report.json | jq -Rs '{text: "Trivy Terraform Scan Summary", \
+            attachments: [{text: "Scan Summary", \
+            fields: [{title: "Scan Summary", value: ., short: false}]}]}')
+          echo "IMAGE_SCAN_SUMMARY<<EOF" >> $GITHUB_ENV
+          echo "$JSON_TF_PAYLOAD" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      
+      - name: echo-scan-summary
+        run: echo "$IMAGE_SCAN_SUMMARY"
+
       - name: Push Docker image to registry
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
