@@ -54,13 +54,32 @@ jobs:
       - name: summarize-and-format-trivy-image-scan-results
         run: |
           apt update && apt install -y jq
-          JSON_TF_PAYLOAD=$(jq -r '.Results[] | .Vulnerabilities[] | "- Severity: \(.Severity), ID: \(.VulnerabilityID), Package: \(.PkgName)\n"' image-report.json | jq -Rs '{text: "Trivy Image Scan Summary", attachments: [{text: "Scan Summary", fields: [{title: "Scan Summary", value: ., short: false}]}]}')
+          JSON_TF_PAYLOAD=$(jq -r \
+              '.Results[] | .Vulnerabilities[] | 
+              "- Severity: \(.Severity), ID: \(.VulnerabilityID), Package: \(.PkgName)\n"' \
+              image-report.json | 
+              jq -Rs \
+                  '{
+                      text: "Trivy Image Scan Summary", 
+                      attachments: [
+                          {
+                              text: "Scan Summary", 
+                              fields: [
+                                  {
+                                      title: "Scan Summary", 
+                                      value: ., 
+                                      short: false
+                                  }
+                              ]
+                          }
+                      ]
+                  }')
           echo "IMAGE_SCAN_SUMMARY<<EOF" >> $GITHUB_ENV
           echo "$JSON_TF_PAYLOAD" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
       
       - name: echo-scan-summary
-        run: echo "$IMAGE_SCAN_SUMMARY"
+        run: echo -e "$IMAGE_SCAN_SUMMARY"
 
       - name: Push Docker image to registry
         run: |
