@@ -22,10 +22,10 @@ jobs:
       - name: cost-analysis-with-infracost
         run: |
           infracost breakdown --path $TF_DIR \
-                    --format json \
-                    --terraform-var-file $TF_DIR/$TF_ENV.tfvars \
-                    --terraform-var app_version=${{ github.sha }} \
-                    --out-file cost-analysis.json
+            --format json \
+            --terraform-var-file $TF_DIR/$TF_ENV.tfvars \
+            --terraform-var app_version=d27dcf962501d6368cf744df8c38c5421bb3d222 \
+            --out-file cost-analysis.json
 
           jq . cost-analysis.json
           jq '.totalResources' cost-analysis.json
