@@ -14,7 +14,7 @@ jobs:
               echo "is_valid=true" >> $GITHUB_OUTPUT
             else
               echo "Invalid branch name. The branch name must correspond to a Jira issue key."
-              echo "is_valid=false" >> $GITHUB_OUTPUT"
+              echo "is_valid=false" >> $GITHUB_OUTPUT
             fi
   get-cost-analysis:
     runs-on: ubuntu-latest
