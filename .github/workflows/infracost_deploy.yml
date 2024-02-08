@@ -34,7 +34,7 @@ jobs:
           echo "********************************************"
           TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
           TOTAL_DAILY_COST=$(echo "$TOTAL_HOURLY_COST * 24" | bc)
-          TOTAL_RESOURCES=$(jq '.totalDetectedResources' cost-analysis.json)
+          TOTAL_RESOURCES=$(jq '.summary.totalDetectedResources' cost-analysis.json)
           COST_SUMMARY="Total Daily Cost: $TOTAL_DAILY_COST, Total Resources Detected: $TOTAL_RESOURCES"
           echo "COST_SUMMARY=$COST_SUMMARY" >> $GITHUB_ENV
     
