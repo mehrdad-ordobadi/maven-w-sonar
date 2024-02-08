@@ -26,21 +26,21 @@ jobs:
             --terraform-var-file $TF_ENV.tfvars \
             --terraform-var app_version=d27dcf962501d6368cf744df8c38c5421bb3d222 \
             --out-file cost-analysis.json
-
+          echo "********************************************"
           jq . cost-analysis.json
           jq '.totalResources' cost-analysis.json
           jq '.projects[] | .breakdown.resources[] | {name: .name, hourlyCost: .hourlyCost, monthlyCost: .monthlyCost}' cost-analysis.json
           jq '.projects[] | .metadata | .warnings, .errors' cost-analysis.json
-
-      #     TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
-      #     TOTAL_DAILY_COST=$(echo "$TOTAL_HOURLY_COST * 24" | bc)
-      #     TOTAL_RESOURCES=$(jq '.totalDetectedResources' cost-analysis.json)
-      #     COST_SUMMARY="Total Daily Cost: $TOTAL_DAILY_COST, Total Resources Detected: $TOTAL_RESOURCES"
-      #     echo "COST_SUMMARY=$COST_SUMMARY" >> $GITHUB_ENV
+          echo "********************************************"
+          TOTAL_HOURLY_COST=$(jq '[.projects[] | .breakdown.resources[] | .hourlyCost | tonumber] | add' cost-analysis.json)
+          TOTAL_DAILY_COST=$(echo "$TOTAL_HOURLY_COST * 24" | bc)
+          TOTAL_RESOURCES=$(jq '.totalDetectedResources' cost-analysis.json)
+          COST_SUMMARY="Total Daily Cost: $TOTAL_DAILY_COST, Total Resources Detected: $TOTAL_RESOURCES"
+          echo "COST_SUMMARY=$COST_SUMMARY" >> $GITHUB_ENV
     
-      # - name: echo-cost-summary
-      #   run: |
-      #     echo $COST_SUMMARY
+      - name: echo-cost-summary
+        run: |
+          echo $COST_SUMMARY
 
 
             
