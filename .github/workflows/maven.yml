@@ -98,30 +98,26 @@ jobs:
           
       - name: summarize-and-format-trivy-terraform-scan-results
         run: |
-          ls terraform-report.json
-          jq '.' terraform-report.json
-          echo "******************************"
-          # Directly create JSON payload from the report, no need to intermediate file
           JSON_TF_PAYLOAD=$(jq -r \
-              '.Results[] | .Vulnerabilities[] | 
-              "- Severity: \(.Severity), ID: \(.VulnerabilityID), Package: \(.PkgName)\n"' \
-              terraform-report.json | 
-              jq -Rs \
-                  '{
-                      text: "Trivy Terraform Scan Summary", 
-                      attachments: [
-                          {
-                              text: "Scan Summary", 
-                              fields: [
-                                  {
-                                      title: "Scan Summary", 
-                                      value: ., 
-                                      short: false
-                                  }
-                              ]
-                          }
-                      ]
-                  }')
+            '.Results[] | .Misconfigurations[]? | 
+            "- Severity: \(.Severity), ID: \(.ID), Title: \(.Title)\n"' \
+            terraform-report.json | 
+            jq -Rs \
+                '{
+                    text: "Trivy Terraform Scan Summary", 
+                    attachments: [
+                        {
+                            text: "Scan Summary", 
+                            fields: [
+                                {
+                                    title: "Scan Summary", 
+                                    value: ., 
+                                    short: false
+                                }
+                            ]
+                        }
+                    ]
+                }')
           echo "TERRAFORM_SCAN_SUMMARY<<EOF" >> $GITHUB_ENV
           echo "$JSON_TF_PAYLOAD" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
