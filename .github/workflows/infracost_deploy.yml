@@ -11,11 +11,10 @@ jobs:
           run: |
             if [[ "${{ github.ref_name }}" =~ ^[A-Z]{3,7}-[0-9]{1,5}$ ]]; then
               echo "Branch name is valid."
-              echo "::set-output name=is_valid::true"
+              echo "is_valid=true" >> $GITHUB_OUTPUT
             else
-              echo "Invalid branch name. The branch name correspond to a Jira issue key."
-              echo "::set-output name=is_valid::false"
-              exit 1
+              echo "Invalid branch name. The branch name must correspond to a Jira issue key."
+              echo "is_valid=false" >> $GITHUB_OUTPUT"
             fi
   get-cost-analysis:
     runs-on: ubuntu-latest
